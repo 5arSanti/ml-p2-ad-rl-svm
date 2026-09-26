@@ -10,7 +10,12 @@ from sklearn.metrics import (
     recall_score,
     roc_auc_score,
 )
+from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split
+from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import StandardScaler
+from sklearn.svm import SVC
+from sklearn.tree import DecisionTreeClassifier
 
 COLUMNAS = [
     "ingreso_mensual_kcop",
@@ -75,4 +80,22 @@ def metricas_prueba(y_true, y_pred, y_score) -> dict[str, float]:
         "recall": float(recall_score(y_true, y_pred, pos_label=1, zero_division=0)),
         "especificidad": float(tn / (tn + fp)),
         "auc": float(roc_auc_score(y_true, y_score)),
+    }
+
+
+def construir_modelos() -> dict:
+    return {
+        "Árbol": DecisionTreeClassifier(max_depth=4, random_state=11),
+        "Regresión logística": Pipeline(
+            [
+                ("scaler", StandardScaler()),
+                ("clf", LogisticRegression(max_iter=1000, random_state=11)),
+            ]
+        ),
+        "SVM": Pipeline(
+            [
+                ("scaler", StandardScaler()),
+                ("clf", SVC(kernel="rbf", probability=True, random_state=11)),
+            ]
+        ),
     }
