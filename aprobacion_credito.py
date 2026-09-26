@@ -3,6 +3,13 @@ from __future__ import annotations
 from pathlib import Path
 
 import pandas as pd
+from sklearn.metrics import (
+    accuracy_score,
+    confusion_matrix,
+    precision_score,
+    recall_score,
+    roc_auc_score,
+)
 from sklearn.model_selection import train_test_split
 
 COLUMNAS = [
@@ -56,3 +63,16 @@ def partir_train_test(df: pd.DataFrame):
     X = df.drop(columns="aprobado")
     y = df["aprobado"]
     return train_test_split(X, y, test_size=0.25, random_state=11, stratify=y)
+
+
+def metricas_prueba(y_true, y_pred, y_score) -> dict[str, float]:
+    tn, fp, fn, tp = confusion_matrix(y_true, y_pred, labels=[0, 1]).ravel()
+    if tn + fp == 0:
+        raise ValueError("especificidad indefinida: no hay negativos reales")
+    return {
+        "accuracy": float(accuracy_score(y_true, y_pred)),
+        "precision": float(precision_score(y_true, y_pred, pos_label=1, zero_division=0)),
+        "recall": float(recall_score(y_true, y_pred, pos_label=1, zero_division=0)),
+        "especificidad": float(tn / (tn + fp)),
+        "auc": float(roc_auc_score(y_true, y_score)),
+    }
