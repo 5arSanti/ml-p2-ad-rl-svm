@@ -27,3 +27,19 @@ def test_notebook_existe_y_tiene_secciones():
     assert "test_size=0.25" in blob
     assert "random_state=11" in blob
     assert "stratify=y" in blob
+
+
+FRASES = [
+    "Recomiendo la regresión logística",
+    "interpretabilidad",
+    "Cursor",
+    "Guion de 3",
+]
+
+
+def test_notebook_tiene_recomendacion_ia_y_guion():
+    nb = json.loads(NOTEBOOK.read_text(encoding="utf-8"))
+    blob = "\n".join("".join(c.get("source", [])) for c in nb["cells"])
+    for frase in FRASES:
+        assert frase in blob, frase
+    assert "idxmax" not in blob
