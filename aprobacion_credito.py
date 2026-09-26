@@ -3,6 +3,7 @@ from __future__ import annotations
 from pathlib import Path
 
 import pandas as pd
+from sklearn.model_selection import train_test_split
 
 COLUMNAS = [
     "ingreso_mensual_kcop",
@@ -49,3 +50,9 @@ def cargar_dataset(path: Path | None = None) -> pd.DataFrame:
     if not set(df["aprobado"].unique()) <= {0, 1}:
         raise ValueError("aprobado debe ser 0 o 1")
     return df
+
+
+def partir_train_test(df: pd.DataFrame):
+    X = df.drop(columns="aprobado")
+    y = df["aprobado"]
+    return train_test_split(X, y, test_size=0.25, random_state=11, stratify=y)
