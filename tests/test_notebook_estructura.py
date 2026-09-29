@@ -60,3 +60,18 @@ def test_lectura_eda_va_debajo_de_la_figura():
     srcs = _sources()
     idx_fig = next(i for i, s in enumerate(srcs) if "df.boxplot" in s)
     assert "267 aprobados" in srcs[idx_fig + 1]
+
+
+def test_arbol_reglas_e_importancias_tienen_parrafo_debajo():
+    srcs = _sources()
+    idx_fit = next(i for i, s in enumerate(srcs) if 'print("entrenado:"' in s)
+    idx_tree = next(i for i, s in enumerate(srcs) if "plot_tree" in s)
+    idx_rules = next(i for i, s in enumerate(srcs) if "export_text" in s)
+    idx_imp = next(i for i, s in enumerate(srcs) if "feature_importances_" in s)
+    assert idx_fit < idx_tree < idx_rules < idx_imp
+    assert "primer corte" in srcs[idx_tree + 1]
+    assert "663.50" in srcs[idx_tree + 1]
+    assert "663.50" in srcs[idx_rules + 1]
+    assert "no están en la misma escala" in srcs[idx_imp + 1]
+    assert "class_names=[\"Rechazado\", \"Aprobado\"]" in srcs[idx_tree]
+    assert "fontsize=8" in srcs[idx_tree]
