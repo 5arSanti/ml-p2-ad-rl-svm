@@ -43,3 +43,20 @@ def test_notebook_tiene_recomendacion_ia_y_guion():
     for frase in FRASES:
         assert frase in blob, frase
     assert "idxmax" not in blob
+
+
+def _sources():
+    nb = json.loads(NOTEBOOK.read_text(encoding="utf-8"))
+    return ["".join(c.get("source", [])) for c in nb["cells"]]
+
+
+def test_contexto_anuncia_la_lectura_de_modelos():
+    srcs = _sources()
+    assert "dibujo del árbol" in srcs[0]
+    assert "curva ROC" in srcs[0]
+
+
+def test_lectura_eda_va_debajo_de_la_figura():
+    srcs = _sources()
+    idx_fig = next(i for i, s in enumerate(srcs) if "df.boxplot" in s)
+    assert "267 aprobados" in srcs[idx_fig + 1]
