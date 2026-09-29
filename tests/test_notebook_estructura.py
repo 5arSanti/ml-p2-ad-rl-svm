@@ -104,3 +104,23 @@ def test_barras_roc_y_heatmaps_tienen_parrafo_debajo():
     assert "FP es aprobar" in srcs[idx_heat + 1]
     assert "ConfusionMatrixDisplay" not in blob
     assert "labels=[0, 1]" in srcs[idx_heat]
+
+
+def test_recomendacion_cita_roc_y_coeficiente():
+    srcs = _sources()
+    idx = next(i for i, s in enumerate(srcs) if "Recomiendo la regresión logística" in s)
+    texto = srcs[idx]
+    assert "AUC 0.805" in texto
+    assert "+1.127" in texto
+    assert "interpretabilidad" in texto
+    assert "idxmax" not in texto
+
+
+def test_bitacora_y_guion_mencionan_las_figuras():
+    srcs = _sources()
+    idx_ia = next(i for i, s in enumerate(srcs) if "## Uso de inteligencia artificial" in s)
+    idx_guion = next(i for i, s in enumerate(srcs) if "Guion de 3" in s)
+    assert "odds ratios" in srcs[idx_ia]
+    assert "Cursor" in srcs[idx_ia]
+    assert "ROC" in srcs[idx_guion]
+    assert "+1.127" in srcs[idx_guion]
