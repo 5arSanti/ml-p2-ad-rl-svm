@@ -87,3 +87,20 @@ def test_coeficientes_y_nota_svm_van_despues_de_las_importancias():
     assert "−0.957" in srcs[idx_coef + 1]
     assert "kernel RBF" in srcs[idx_coef + 2]
     assert "GridSearch" not in "\n".join(srcs)
+
+
+def test_barras_roc_y_heatmaps_tienen_parrafo_debajo():
+    srcs = _sources()
+    blob = "\n".join(srcs)
+    idx_tabla = next(i for i, s in enumerate(srcs) if "tabla_3 = tabla.round(3)" in s)
+    idx_barras = next(i for i, s in enumerate(srcs) if "Métricas en el conjunto de prueba" in s)
+    idx_roc = next(i for i, s in enumerate(srcs) if "roc_curve" in s)
+    idx_heat = next(i for i, s in enumerate(srcs) if "imshow" in s)
+    assert idx_tabla < idx_barras < idx_roc < idx_heat
+    assert "73.3%" in srcs[idx_barras + 1]
+    assert "0.805" in srcs[idx_roc + 1]
+    assert "0.749" in srcs[idx_roc + 1]
+    assert "0.683" in srcs[idx_roc + 1]
+    assert "FP es aprobar" in srcs[idx_heat + 1]
+    assert "ConfusionMatrixDisplay" not in blob
+    assert "labels=[0, 1]" in srcs[idx_heat]
