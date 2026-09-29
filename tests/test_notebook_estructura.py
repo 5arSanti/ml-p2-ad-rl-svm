@@ -75,3 +75,15 @@ def test_arbol_reglas_e_importancias_tienen_parrafo_debajo():
     assert "no están en la misma escala" in srcs[idx_imp + 1]
     assert "class_names=[\"Rechazado\", \"Aprobado\"]" in srcs[idx_tree]
     assert "fontsize=8" in srcs[idx_tree]
+
+
+def test_coeficientes_y_nota_svm_van_despues_de_las_importancias():
+    srcs = _sources()
+    idx_imp = next(i for i, s in enumerate(srcs) if "feature_importances_" in s)
+    idx_coef = next(i for i, s in enumerate(srcs) if "Odds Ratio" in s)
+    assert idx_coef > idx_imp
+    assert "named_steps[\"clf\"]" in srcs[idx_coef]
+    assert "3.088" in srcs[idx_coef + 1]
+    assert "−0.957" in srcs[idx_coef + 1]
+    assert "kernel RBF" in srcs[idx_coef + 2]
+    assert "GridSearch" not in "\n".join(srcs)
